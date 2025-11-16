@@ -1,0 +1,453 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}ClothVerse - Home{% endblock %}
+
+{% block content %}
+<main class="animate-fade-in">
+    <!-- Hero -->
+    <section class="relative h-[80vh] md:h-[700px] bg-gray-900 flex items-center">
+        <div class="absolute inset-0"><img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover opacity-80"><div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div></div>
+        <div class="relative max-w-[1320px] mx-auto px-4 md:px-8 w-full"><div class="max-w-xl"><span class="text-gold font-medium tracking-wider uppercase mb-4 block">New Collection</span><h1 class="font-serif text-5xl md:text-7xl text-white leading-tight mb-6">Wear the<br/>moment.</h1><p class="text-white/90 text-lg mb-8 max-w-md">Discover our new season essentials.</p><div class="flex flex-col sm:flex-row gap-4"><button class="inline-flex items-center justify-center rounded-full font-medium transition-all active:scale-95 disabled:opacity-50 bg-accent hover:bg-[#E85A50] text-white px-8 py-4 text-lg js-navigate-listing">Shop Now</button></div></div></div>
+    </section>
+
+    <!-- Shop by Category -->
+    <section class="max-w-[1320px] mx-auto px-4 md:px-8 py-16">
+        <h2 class="font-serif text-3xl md:text-4xl text-dark mb-10 text-center">Shop by Category</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+            {% for category in categories|slice:":6" %}
+            <a href="{{ category.get_absolute_url }}" class="group text-center">
+                <div class="aspect-square bg-neutral rounded-full overflow-hidden mb-4 transition-all duration-300 group-hover:shadow-lg group-hover:scale-105">
+                    {% if category.image %}
+                        <img src="{{ category.image.url }}" alt="{{ category.name }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center bg-gray-100">
+                            <i data-lucide="image-off" class="w-12 h-12 text-gray-400"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <h3 class="font-medium text-dark group-hover:text-primary transition-colors">{{ category.name }}</h3>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- This content was previously rendered by JavaScript. Moving it here is better practice. -->
+    <section class="max-w-[1320px] mx-auto px-4 md:px-8 py-16">
+        <h2 class="font-serif text-3xl md:text-4xl text-dark mb-10">Highlights</h2>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for home_product in home_products %}
+                <div class="group cursor-pointer flex flex-col">
+                    <div class="relative overflow-hidden rounded-xl bg-[#F3F4F6] aspect-[3/4] mb-4">
+                        {% if home_product.product.images.first %}
+                            <img src="{{ home_product.product.images.first.image.url }}" alt="{{ home_product.get_display_title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        {% else %}
+                            <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                <i data-lucide="image" class="w-12 h-12 text-gray-400"></i>
+                            </div>
+                        {% endif %}
+
+                        {% if home_product.is_featured %}
+                            <span class="absolute top-3 left-3 bg-accent text-white px-2 py-1 text-xs font-bold tracking-wider uppercase rounded-sm z-10">Featured</span>
+                        {% endif %}
+
+                        <button class="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition-colors opacity-0 group-hover:opacity-100 z-10">
+                            <i data-lucide="heart" class="w-[18px] h-[18px] text-dark"></i>
+                        </button>
+                    </div>
+                    <div class="flex justify-between items-start gap-2">
+                        <div>
+                            <h3 class="font-medium text-dark line-clamp-1">{{ home_product.get_display_title }}</h3>
+                            <p class="text-sm text-gray-500 capitalize">{{ home_product.product.category.name }}</p>
+                        </div>
+                        <p class="font-semibold text-primary">₹{{ home_product.product.price|floatformat:0 }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-span-full text-center py-12">
+                    <div class="w-16 h-16 bg-neutral rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="package" class="w-8 h-8 text-gray-400"></i>
+                    </div>
+                    <h3 class="font-serif text-xl text-dark mb-2">No products featured yet</h3>
+                    <p class="text-gray-600">Check back soon for our latest highlights.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+            
+    <section class="max-w-[1320px] mx-auto px-4 md:px-8 py-16 border-t border-gray-100">
+        <div class="flex justify-between items-end mb-12">
+            <h2 class="font-serif text-3xl md:text-4xl text-dark">Featured Collection</h2>
+            <button class="hidden md:flex items-center gap-2 font-medium text-primary hover:gap-3 transition-all js-navigate-listing">Shop All <i data-lucide="arrow-right" class="w-4.5 h-4.5"></i></button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12 js-product-grid-featured">
+        </div>
+            <button class="md:hidden w-full mt-8 flex items-center justify-center gap-2 font-medium border border-dark py-3 rounded-full js-navigate-listing">Shop All <i data-lucide="arrow-right" class="w-4.5 h-4.5"></i></button>
+    </section>
+
+    <!-- Jewellery Section -->
+    {% if jewellery_products %}
+    <section class="max-w-[1320px] mx-auto px-4 md:px-8 py-16">
+        <div class="flex justify-between items-end mb-12">
+            <h2 class="font-serif text-3xl md:text-4xl text-dark">The Jewellery Edit</h2>
+            <a href="#" class="hidden md:flex items-center gap-2 font-medium text-primary hover:gap-3 transition-all">Shop All Jewellery <i data-lucide="arrow-right" class="w-4.5 h-4.5"></i></a>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12">
+            {% for product in jewellery_products %}
+            <a href="{{ product.get_absolute_url }}" class="group cursor-pointer flex flex-col">
+                <div class="relative overflow-hidden rounded-xl bg-[#F3F4F6] aspect-[3/4] mb-4">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                </div>
+                <div class="flex justify-between items-start gap-2">
+                    <div>
+                        <h3 class="font-medium text-dark line-clamp-1">{{ product.name }}</h3>
+                        <p class="text-sm text-gray-500 capitalize">{{ product.category.name }}</p>
+                    </div>
+                    <p class="font-semibold text-primary">₹{{ product.price|floatformat:0 }}</p>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <section class="max-w-[1320px] mx-auto px-4 md:px-8 py-20 bg-[#F8F5F1]">
+            <h2 class="font-serif text-3xl md:text-4xl text-dark mb-10 text-center">Curated Edits</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 js-curated-edits">
+            </div>
+    </section>
+
+    <section class="max-w-[1320px] mx-auto px-4 md:px-8 py-24">
+        <h2 class="font-serif text-3xl md:text-4xl text-dark mb-10 text-center">The Journal</h2>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="group cursor-pointer">
+                <div class="aspect-[16/9] overflow-hidden rounded-xl mb-6">
+                    <img src="https://images.unsplash.com/photo-1558769132-cb1f1da3c01f?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Editorial 1">
+                </div>
+                <span class="text-sm font-medium text-primary mb-2 block">Style Guide</span>
+                <h3 class="font-serif text-2xl mb-3 group-hover:text-primary transition-colors">5 Ways to Style the Oversized Blazer</h3>
+                <p class="text-gray-600 mb-4">From office hours to after hours, discover the versatility of this season's must-have tailoring piece.</p>
+                <span class="font-medium flex items-center gap-2 underline decoration-gray-300 underline-offset-4">Read Story <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
+            </div>
+            <div class="group cursor-pointer">
+                <div class="aspect-[16/9] overflow-hidden rounded-xl mb-6">
+                    <img src="https://images.unsplash.com/photo-1490723177227-2a1250953d89?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Editorial 2">
+                </div>
+                <span class="text-sm font-medium text-primary mb-2 block">Sustainability</span>
+                <h3 class="font-serif text-2xl mb-3 group-hover:text-primary transition-colors">Meet the Makers: Our Eco-Conscious Silk</h3>
+                <p class="text-gray-600 mb-4">A behind-the-scenes look at how we source our premium silk while minimizing environmental impact.</p>
+                <span class="font-medium flex items-center gap-2 underline decoration-gray-300 underline-offset-4">Read Story <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-primary text-white py-20">
+        <div class="max-w-[1320px] mx-auto px-4 md:px-8 text-center js-newsletter-section">
+            <i data-lucide="mail" class="w-8 h-8 mx-auto mb-6 text-gold"></i>
+            <h2 class="font-serif text-3xl md:text-4xl mb-4">Join the Verse</h2>
+            <p class="text-white/80 text-lg mb-8 max-w-md mx-auto">Sign up for early access to new drops, exclusive offers, and 10% off your first order.</p>
+            <form class="flex max-w-md mx-auto bg-white/10 p-1 rounded-full backdrop-blur-sm border border-white/20 focus-within:bg-white/20 transition-all js-newsletter-form">
+                <input type="email" required placeholder="Your email address" class="bg-transparent border-none text-white placeholder:text-white/60 flex-1 px-6 py-3 focus:ring-0 outline-none">
+                <button type="submit" class="bg-white text-primary px-8 py-3 rounded-full font-medium hover:bg-neutral transition-colors">Subscribe</button>
+            </form>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    /* --- 1. MOCK DATA & CONSTANTS --- */
+    const MOCK_PRODUCTS = [
+        { id: 'p1', name: 'Lusso Silk Midi Dress', category: 'clothing', price: 4999, rating: 4.8, reviews: 124, image: 'https://images.unsplash.com/photo-1596908621882-e65463864251?q=80&w=1000&auto=format&fit=crop', imageAlt: 'https://images.unsplash.com/photo-1596908621823-271946fb5911?q=80&w=1000&auto=format&fit=crop', tags: ['new', 'bestseller'], colors: ['#8E1E3E', '#0F1724'], sizes: ['XS', 'S', 'M', 'L'], description: 'Crafted from premium sustainable silk, this midi dress features a relaxed silhouette perfect for day-to-night transitions.' },
+        { id: 'p2', name: 'Facet Gold Signet Ring', category: 'jewellery', price: 2499, rating: 4.9, reviews: 89, image: 'https://images.unsplash.com/photo-1603974372039-adc49044b6bd?q=80&w=1000&auto=format&fit=crop', imageAlt: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=1000&auto=format&fit=crop', tags: ['limited'], colors: ['#D4AF37'], sizes: ['6', '7', '8'], description: '18k gold vermeil signet ring featuring our signature facet motif. A modern heirloom.' },
+        { id: 'p3', name: 'Venture Leather Loafer', category: 'footwear', price: 3999, rating: 4.6, reviews: 52, image: 'https://images.unsplash.com/photo-1621996659490-3275b4d0d951?q=80&w=1000&auto=format&fit=crop', imageAlt: 'https://images.unsplash.com/photo-1608668364299-23d43144c27b?q=80&w=1000&auto=format&fit=crop', tags: [], colors: ['#0F1724', '#8B4513'], sizes: ['36', '37', '38', '39', '40'], description: 'Classic penny loafers reimagined with a chunky lightweight sole for all-day city walking.' },
+        { id: 'p4', name: 'Structured Wool Blazer', category: 'clothing', price: 5999, rating: 4.7, reviews: 210, image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1000&auto=format&fit=crop', imageAlt: 'https://images.unsplash.com/photo-1589871973318-9ca1258faa5d?q=80&w=1000&auto=format&fit=crop', tags: ['bestseller'], colors: ['#F3F4F6', '#0F1724'], sizes: ['S', 'M', 'L', 'XL'], description: 'An oversized, sharply tailored blazer that elevates any casual look instantly.' },
+        { id: 'p5', name: 'Opal Drop Earrings', category: 'jewellery', price: 1899, rating: 5.0, reviews: 15, image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=1000&auto=format&fit=crop', imageAlt: 'https://images.unsplash.com/photo-1635767798638-3e2523c1c3eb?q=80&w=1000&auto=format&fit=crop', tags: ['new'], colors: ['#D4AF37'], sizes: ['One Size'], description: 'Delicate gold vermeil drops with ethically sourced opal stones.' },
+        { id: 'p6', name: 'Minimalist Suede Sneaker', category: 'footwear', price: 3299, rating: 4.5, reviews: 180, image: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=1000&auto=format&fit=crop', imageAlt: 'https://images.unsplash.com/photo-1584735175315-9d5df23860e6?q=80&w=1000&auto=format&fit=crop', tags: [], colors: ['#F3F4F6', '#D2B48C'], sizes: ['36', '37', '38', '39', '40', '41'], description: 'Clean lines and premium suede make this the ultimate versatile everyday sneaker.' },
+        { id: 'p7', name: 'Cashmere Wrap Coat', category: 'clothing', price: 8999, rating: 4.9, reviews: 64, image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?q=80&w=1000&auto=format&fit=crop', imageAlt: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?q=80&w=1000&auto=format&fit=crop', tags: [], colors: ['#D2B48C', '#0F1724'], sizes: ['S', 'M', 'L'], description: 'Luxurious 100% cashmere wrap coat.' },
+        { id: 'p8', name: 'Pave Diamond Huggies', category: 'jewellery', price: 3499, rating: 4.7, reviews: 42, image: 'https://images.unsplash.com/photo-1615655406736-b37c4fabf923?q=80&w=1000&auto=format&fit=crop', imageAlt: 'https://images.unsplash.com/photo-1615655406736-b37c4fabf923?q=80&w=1000&auto=format&fit=crop', tags: ['bestseller'], colors: ['#D4AF37'], sizes: ['One Size'], description: 'Everyday diamond pave huggie earrings.' }
+    ];
+
+    /* --- 2. APPLICATION STATE --- */
+    let appState = {
+        view: 'home',
+        selectedProductId: null,
+        cartOpen: false,
+        listingFilters: { category: 'all' },
+        cart: [{ product: MOCK_PRODUCTS[1], quantity: 1, size: '7', color: '#D4AF37' }],
+        tempProductState: { size: null, color: null, quantity: 1 }
+    };
+    
+    /* --- 3. UTILITY FUNCTIONS --- */
+    function formatPrice(price) {
+        return '₹' + price.toLocaleString();
+    }
+
+    function getCartTotal() {
+        return appState.cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+    }
+
+    function renderIcons() {
+        lucide.createIcons();
+    }
+    
+    /* --- 4. COMPONENT RENDERERS --- */
+    const Components = {
+        Button: (text, variant = 'primary', extraClasses = '', attributes = '') => {
+            const variants = {
+                primary: 'bg-accent hover:bg-[#E85A50] text-white',
+                secondary: 'bg-dark hover:opacity-90 text-white',
+                outline: 'border-2 border-dark text-dark hover:bg-dark hover:text-white',
+                ghost: 'hover:bg-neutral text-dark',
+            };
+            return `<button class="inline-flex items-center justify-center rounded-full font-medium transition-all active:scale-95 disabled:opacity-50 ${variants[variant] || variants.primary} ${extraClasses}" ${attributes}>${text}</button>`;
+        },
+    
+        ProductCard: (product) => {
+            return `
+            <div class="group cursor-pointer flex flex-col js-navigate-product" data-id="${product.id}">
+                <div class="relative overflow-hidden rounded-xl bg-[#F3F4F6] aspect-[3/4] mb-4">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 group-hover:opacity-0 absolute inset-0">
+                    <img src="${product.imageAlt}" alt="${product.name} Alt" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0 opacity-0 group-hover:opacity-100">
+                    
+                    ${product.tags.includes('new') ? '<span class="absolute top-3 left-3 bg-white px-2 py-1 text-xs font-bold tracking-wider uppercase rounded-sm z-10">New In</span>' : ''}
+                    ${product.tags.includes('limited') ? '<span class="absolute top-3 left-3 bg-dark text-white px-2 py-1 text-xs font-bold tracking-wider uppercase rounded-sm z-10">Limited</span>' : ''}
+                    
+                    <button class="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition-colors opacity-0 group-hover:opacity-100 z-10 js-stop-propagation">
+                        <i data-lucide="heart" class="w-[18px] h-[18px] text-dark"></i>
+                    </button>
+                    
+                    <!-- UPDATED HOVER ACTIONS: Add to Bag & Buy Now -->
+                    <div class="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 hidden md:flex gap-2 z-10">
+                       <button class="flex-1 py-2.5 text-sm bg-dark text-white rounded-full font-medium hover:opacity-90 js-quick-add js-stop-propagation" data-id="${product.id}">Add to Bag</button>
+                       <button class="flex-1 py-2.5 text-sm bg-white text-dark border-2 border-dark rounded-full font-medium hover:bg-neutral js-quick-buy js-stop-propagation" data-id="${product.id}">Buy Now</button>
+                    </div>
+                </div>
+                <div class="flex justify-between items-start gap-2">
+                    <div>
+                        <h3 class="font-medium text-dark line-clamp-1">${product.name}</h3>
+                        <p class="text-sm text-gray-500 capitalize">${product.category}</p>
+                    </div>
+                    <p class="font-semibold text-primary">${formatPrice(product.price)}</p>
+                </div>
+                <div class="flex gap-1 mt-2">
+                    ${product.colors.map(c => `<div class="w-3 h-3 rounded-full border border-gray-200" style="background-color: ${c}"></div>`).join('')}
+                </div>
+            </div>
+            `;
+        },
+    
+        MiniCarousel: (title, products) => {
+            return `
+            <div class="relative aspect-square bg-[#F8F5F1] rounded-2xl overflow-hidden group/carousel js-mini-carousel cursor-pointer" data-index="0" data-total="${products.length}">
+                <div class="js-carousel-slides">
+                     ${products.map((p, i) => `
+                        <div class="absolute inset-0 transition-opacity duration-500 ${i === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'} js-slide" data-slide="${i}" data-id="${p.id}">
+                            <img src="${p.image}" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-6 z-20 text-white">
+                                <div class="mb-1 text-xs font-medium tracking-wider uppercase opacity-80">${title}</div>
+                                <div class="flex justify-between items-end">
+                                  <div>
+                                     <h3 class="font-serif text-2xl leading-tight mb-1">${p.name}</h3>
+                                     <p class="font-medium">${formatPrice(p.price)}</p>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                     `).join('')}
+                </div>
+                <!-- Nav -->
+                <button class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity hover:bg-white js-carousel-prev js-stop-propagation"><i data-lucide="chevron-left" class="w-5 h-5 text-dark"></i></button>
+                <button class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity hover:bg-white js-carousel-next js-stop-propagation"><i data-lucide="chevron-right" class="w-5 h-5 text-dark"></i></button>
+                <!-- Indicators -->
+                <div class="absolute bottom-6 right-6 z-30 flex gap-1.5">
+                    ${products.map((_, i) => `<div class="h-1 rounded-full transition-all ${i === 0 ? 'w-6 bg-white' : 'w-2 bg-white/40'} js-indicator" data-slide="${i}"></div>`).join('')}
+                </div>
+            </div>
+            `;
+        }
+    };
+    
+    // --- PAGE CONTENT RENDERERS ---
+    function renderHomePage() {
+        // This function now just populates the sections that are already in the HTML
+        $('.js-product-grid-highlights').html(MOCK_PRODUCTS.slice(0, 4).map(p => Components.ProductCard(p)).join(''));
+        $('.js-product-grid-featured').html(MOCK_PRODUCTS.map(p => Components.ProductCard(p)).join(''));
+        $('.js-curated-edits').html(`
+            ${Components.MiniCarousel('Best Sellers', [MOCK_PRODUCTS[0], MOCK_PRODUCTS[3], MOCK_PRODUCTS[5]])}
+            ${Components.MiniCarousel('New Season Footwear', [MOCK_PRODUCTS[2], MOCK_PRODUCTS[5]])}
+            ${Components.MiniCarousel('The Gold Edit', [MOCK_PRODUCTS[1], MOCK_PRODUCTS[7]])}
+        `);
+    }
+
+    function renderListingPage() {
+        const cat = appState.listingFilters.category;
+        let products = MOCK_PRODUCTS;
+        if (cat !== 'all' && !['new arrivals', 'bestsellers'].includes(cat)) {
+             products = products.filter(p => p.category === cat);
+        }
+        return `
+        <main class="max-w-[1320px] mx-auto px-4 md:px-8 py-8 animate-fade-in">
+            <div class="mb-8"><h1 class="font-serif text-4xl md:text-5xl text-dark capitalize">${cat === 'all' ? 'Shop All' : cat}</h1></div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">${products.map(p => Components.ProductCard(p)).join('')}</div>
+        </main>`;
+    }
+
+    function renderProductPage() {
+        const product = MOCK_PRODUCTS.find(p => p.id === appState.selectedProductId) || MOCK_PRODUCTS[0];
+        if (!appState.tempProductState.color) appState.tempProductState.color = product.colors[0];
+        return `
+        <main class="max-w-[1320px] mx-auto px-4 md:px-8 py-12 animate-fade-in">
+            <div class="grid md:grid-cols-2 gap-12"><div class="aspect-[3/4] bg-gray-100 rounded-xl overflow-hidden"><img src="${product.image}" class="w-full h-full object-cover"></div>
+            <div class="flex flex-col"><h1 class="font-serif text-4xl text-dark mb-4">${product.name}</h1><p class="text-2xl font-semibold text-primary mb-6">${formatPrice(product.price)}</p><p class="text-gray-600 mb-8">${product.description}</p>
+            <div class="mb-6"><span class="font-medium text-sm text-dark mb-3 block">Color</span><div class="flex gap-3">${product.colors.map(c => `<button class="w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${appState.tempProductState.color === c ? 'border-dark' : 'border-transparent'} js-select-color" data-color="${c}"><div class="w-8 h-8 rounded-full border border-black/10" style="background-color: ${c}"></div></button>`).join('')}</div></div>
+            <div class="mb-8"><span class="font-medium text-sm text-dark mb-3 block">Size</span><div class="grid grid-cols-4 gap-2">${product.sizes.map(s => `<button class="py-3 rounded-md border-2 font-medium text-sm transition-all ${appState.tempProductState.size === s ? 'border-dark bg-dark text-white' : 'border-gray-200 hover:border-gray-400 text-dark'} js-select-size" data-size="${s}">${s}</button>`).join('')}</div></div>
+            <div class="flex gap-4">${Components.Button(appState.tempProductState.size ? `Add to Bag — ${formatPrice(product.price)}` : 'Select Size', 'primary', `flex-1 py-4 text-base ${!appState.tempProductState.size ? 'opacity-50' : ''} js-add-to-cart`, !appState.tempProductState.size ? 'disabled' : '')}</div></div></div>
+        </main>`;
+    }
+    
+    /* --- 6. MAIN RENDER CONTROLLER --- */
+    function renderMainView() {
+        const $root = $('#app-root-content');
+        if ($root.length === 0) return; // Safety check
+        let content = '';
+        switch(appState.view) {
+            case 'home': content = renderHomePage(); break;
+            case 'listing': content = renderListingPage(); break;
+            case 'product': content = renderProductPage(); break;
+        }
+        $root.html(content); // This will now only replace the content block
+        renderIcons();
+        window.scrollTo(0,0);
+    }
+    
+    /* --- 7. TARGETED DOM UPDATES --- */
+    function updateCartUI() {
+        const total = getCartTotal();
+        const count = appState.cart.length;
+
+        // Update badges
+        $('.js-cart-count').text(count);
+        if (count > 0) $('.js-cart-count').show(); else $('.js-cart-count').hide();
+
+        // Update Drawer Content
+        $('.js-cart-title').text(`Your Bag (${count})`);
+        
+        if (count === 0) {
+             $('.js-cart-items').html(`<div class="h-full flex flex-col items-center justify-center text-center opacity-60"><i data-lucide="shopping-bag" class="w-12 h-12 mb-4 text-gray-300"></i><p class="text-xl font-medium">Empty Bag</p></div>`);
+             $('.js-cart-footer').hide();
+        } else {
+             $('.js-cart-items').html(`<div class="flex flex-col gap-6">${appState.cart.map((item, idx) => `
+                <div class="flex gap-4 py-4 border-b last:border-0">
+                    <div class="w-20 h-28 bg-gray-100 rounded-md overflow-hidden flex-shrink-0"><img src="${item.product.image}" class="w-full h-full object-cover"></div>
+                    <div class="flex-1 flex flex-col"><div class="flex justify-between"><h4 class="font-medium text-dark line-clamp-1">${item.product.name}</h4><button class="text-gray-400 hover:text-red-500 js-remove-cart" data-idx="${idx}"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><p class="text-sm text-gray-500 mb-2 capitalize">${item.color} / ${item.size}</p><div class="mt-auto flex items-center justify-between"><div class="flex items-center border rounded-full px-2 py-1"><button class="p-1 js-update-qty" data-idx="${idx}" data-change="-1"><i data-lucide="minus" class="w-3.5 h-3.5"></i></button><span class="mx-3 text-sm font-medium">${item.quantity}</span><button class="p-1 js-update-qty" data-idx="${idx}" data-change="1"><i data-lucide="plus" class="w-3.5 h-3.5"></i></button></div><p class="font-semibold text-primary">${formatPrice(item.product.price * item.quantity)}</p></div></div>
+                </div>`).join('')}</div>`);
+             $('.js-cart-footer').html(`<div class="flex justify-between mb-2"><span class="text-gray-600">Subtotal</span><span class="font-medium">${formatPrice(total)}</span></div>${Components.Button('Checkout • ' + formatPrice(total), 'primary', 'w-full py-4 text-lg')}`).show();
+        }
+
+        // Toggle Drawer Visibility
+        const $overlay = $('.js-cart-overlay');
+        if (appState.cartOpen) {
+            $overlay.removeClass('pointer-events-none');
+            $('.js-cart-backdrop').removeClass('opacity-0').addClass('opacity-100');
+            $('.js-cart-drawer').removeClass('translate-x-full').addClass('translate-x-0');
+        } else {
+            $overlay.addClass('pointer-events-none');
+            $('.js-cart-backdrop').removeClass('opacity-100').addClass('opacity-0');
+            $('.js-cart-drawer').removeClass('translate-x-0').addClass('translate-x-full');
+        }
+        renderIcons();
+    }
+    
+    /* --- 8. INITIALIZATION & EVENTS --- */
+    $(document).ready(function() {
+        // The base structure is now in base.html.
+        // We just need to populate the dynamic parts of the home page.
+        if (appState.view === 'home') {
+            renderHomePage();
+        }
+
+        // --- EVENT DELEGATION ---
+
+        // Navigation
+        $(document).on('click', '.js-navigate-home', function() { appState.view = 'home'; renderMainView(); });
+        $(document).on('click', '.js-navigate-listing', function() { appState.listingFilters.category = 'all'; appState.view = 'listing'; renderMainView(); });
+        $(document).on('click', '.js-navigate-product', function() { appState.selectedProductId = $(this).data('id'); appState.tempProductState = { size: null, color: null, quantity: 1 }; appState.view = 'product'; renderMainView(); });
+        $(document).on('click', '.js-filter-category', function(e) { e.stopPropagation(); appState.listingFilters.category = $(this).data('cat'); appState.view = 'listing'; updateMegaMenu(null); renderMainView(); });
+
+        // Mini Carousel Logic
+        function updateCarousel($carousel, change) {
+            const current = parseInt($carousel.data('index'));
+            const total = parseInt($carousel.data('total'));
+            let next = (current + change) % total;
+            if (next < 0) next = total - 1;
+            $carousel.data('index', next);
+            // Update Slides
+            $carousel.find('.js-slide').removeClass('opacity-100 z-10').addClass('opacity-0 z-0');
+            $carousel.find(`.js-slide[data-slide="${next}"]`).removeClass('opacity-0 z-0').addClass('opacity-100 z-10');
+            // Update Indicators
+            $carousel.find('.js-indicator').removeClass('w-6 bg-white').addClass('w-2 bg-white/40');
+            $carousel.find(`.js-indicator[data-slide="${next}"]`).removeClass('w-2 bg-white/40').addClass('w-6 bg-white');
+        }
+        $(document).on('click', '.js-carousel-next', function(e) { e.stopPropagation(); updateCarousel($(this).closest('.js-mini-carousel'), 1); });
+        $(document).on('click', '.js-carousel-prev', function(e) { e.stopPropagation(); updateCarousel($(this).closest('.js-mini-carousel'), -1); });
+        // Click on carousel itself navigates to active product
+        $(document).on('click', '.js-mini-carousel', function() {
+            const activeSlideId = $(this).find('.js-slide.opacity-100').data('id');
+            if (activeSlideId) { appState.selectedProductId = activeSlideId; appState.tempProductState = { size: null, color: null, quantity: 1 }; appState.view = 'product'; renderMainView(); }
+        });
+
+        // Newsletter Mock Submit
+        $(document).on('submit', '.js-newsletter-form', function(e) {
+            e.preventDefault();
+            $('.js-newsletter-section').html(`
+                <div class="animate-fade-in py-10">
+                    <i data-lucide="check-circle" class="w-16 h-16 mx-auto mb-6 text-gold"></i>
+                    <h2 class="font-serif text-3xl md:text-4xl mb-4">Welcome to the Verse.</h2>
+                    <p class="text-white/80 text-lg">Check your inbox for your 10% off code.</p>
+                </div>
+            `);
+            renderIcons();
+        });
+
+        // Cart
+        $(document).on('click', '.js-toggle-cart', function(e) { e.stopPropagation(); appState.cartOpen = !appState.cartOpen; updateCartUI(); });
+        $(document).on('click', '.js-update-qty', function() { const idx = $(this).data('idx'), chg = $(this).data('change'); appState.cart[idx].quantity = Math.max(1, appState.cart[idx].quantity + chg); updateCartUI(); });
+        $(document).on('click', '.js-remove-cart', function() { appState.cart.splice($(this).data('idx'), 1); updateCartUI(); });
+        $(document).on('click', '.js-add-to-cart', function() {
+            const p = MOCK_PRODUCTS.find(i => i.id === appState.selectedProductId);
+            const existing = appState.cart.find(i => i.product.id === p.id && i.size === appState.tempProductState.size && i.color === appState.tempProductState.color);
+            if (existing) existing.quantity++; else appState.cart.push({ product: p, quantity: 1, size: appState.tempProductState.size, color: appState.tempProductState.color });
+            appState.cartOpen = true; updateCartUI();
+        });
+
+        // Quick Hover Actions
+        $(document).on('click', '.js-quick-add, .js-quick-buy', function(e) {
+             e.stopPropagation();
+             const pId = $(this).data('id');
+             const p = MOCK_PRODUCTS.find(x => x.id === pId);
+             if(p) {
+                 // Add with default first options for speed
+                 const existing = appState.cart.find(i => i.product.id === p.id && i.size === p.sizes[0] && i.color === p.colors[0]);
+                 if (existing) existing.quantity++; else appState.cart.push({ product: p, quantity: 1, size: p.sizes[0], color: p.colors[0] });
+                 appState.cartOpen = true;
+                 updateCartUI();
+             }
+        });
+
+        // Product Page Options
+        $(document).on('click', '.js-select-size', function() { appState.tempProductState.size = $(this).data('size'); renderMainView(); });
+        $(document).on('click', '.js-select-color', function() { appState.tempProductState.color = $(this).data('color'); renderMainView(); });
+
+        $(document).on('click', '.js-stop-propagation', function(e) { e.stopPropagation(); });
+
+        // Sticky Header Shadow
+        $(window).on('scroll', function() {
+            if (window.scrollY > 50) $('.js-header').addClass('shadow-sm');
+            else if ($('.js-mega-menu').hasClass('invisible')) $('.js-header').removeClass('shadow-sm');
+        });
+    });
+</script>
+{% endblock %}

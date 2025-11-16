@@ -1,0 +1,495 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ClothVerse - Modern Affordable Luxe{% endblock %}</title>
+    
+    <!-- TAILWIND CSS (For Exact UI Match) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8E1E3E',
+                        accent: '#FF6B61',
+                        dark: '#0F1724',
+                        neutral: '#F3F4F6',
+                        gold: '#D4AF37',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-in-left': 'slideInLeft 0.3s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideInLeft: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FONTS -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+    <!-- ICONS (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <!-- JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; color: #0F1724; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Ensuring exact color matches where Tailwind arbitrary values might conflict in CDN mode */
+        .bg-primary { background-color: #8E1E3E; }
+        .text-primary { color: #8E1E3E; }
+        .bg-accent { background-color: #FF6B61; }
+        .bg-dark { background-color: #0F1724; }
+        .text-gold { color: #D4AF37; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-white min-h-screen selection:bg-[#FF6B61] selection:text-white">
+
+    <!-- APP CONTAINER -->
+    <div id="app-root">
+        <!-- Promo Banner -->
+        <div class="fixed inset-0 z-[60] pointer-events-none js-mobile-menu-overlay">
+            <!-- Backdrop -->
+            <div class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 js-mobile-menu-backdrop"></div>
+            <!-- Menu -->
+            <div class="relative w-full max-w-sm bg-white h-full shadow-xl transition-transform duration-300 -translate-x-full js-mobile-menu-drawer">
+                <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+                    <div class="font-serif text-2xl tracking-tight text-dark">Cloth<span class="font-light">Verse</span></div>
+                    <button class="p-2 -mr-2 js-toggle-mobile-menu"><i data-lucide="x" class="w-6 h-6 text-dark"></i></button>
+                </div>
+                <nav class="p-4">
+                    <ul class="flex flex-col gap-1">
+                        {% for item in shop_menu_items.shop %}
+                            <li>
+                                <a href="{{ item.url }}" class="flex items-center justify-between px-4 py-3 text-dark font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                                    <span>{{ item.name }}</span>
+                                    {% if item.has_dropdown %}
+                                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                        <li>
+                            <a href="{% url 'product_list' %}" class="flex items-center justify-between px-4 py-3 text-dark font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                                <span>Products</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100">
+                    <a href="{% url 'login' %}" class="w-full inline-flex items-center justify-center rounded-full font-medium transition-all active:scale-95 bg-accent hover:bg-[#E85A50] text-white px-6 py-3 text-base">
+                        Login / Register
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="bg-primary text-white text-xs py-2 px-4 text-center font-medium tracking-wide relative z-50">
+            Free shipping on orders ₹999+ • Easy 15-day returns
+        </div>
+        <!-- Main Header -->
+        <header class="sticky top-0 z-40 bg-white transition-all duration-300 js-header">
+            <!-- TOP ROW -->
+            <div class="max-w-[1320px] mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between gap-4 border-b border-gray-50 relative z-[51] bg-white js-top-row">
+                <!-- Logo & Mobile Toggle -->
+                <div class="flex items-center gap-2 md:gap-4 flex-shrink-0">
+                    <button class="md:hidden p-2 -ml-2 js-toggle-mobile-menu"><i data-lucide="menu" class="w-6 h-6 text-dark"></i></button>
+                    <a href="{% url 'home' %}" class="cursor-pointer js-navigate-home">
+                        <div class="font-serif text-2xl md:text-3xl tracking-tight text-dark">Cloth<span class="font-light">Verse</span></div>
+                    </a>
+                </div>
+                <!-- Search -->
+                <div class="hidden md:block flex-1 max-w-2xl px-8">
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"><i data-lucide="search" class="w-5 h-5"></i></span>
+                        <input type="text" placeholder="Search for products..." class="w-full bg-neutral border-2 border-transparent focus:border-primary/10 focus:bg-white rounded-full py-2.5 pl-12 pr-4 text-sm transition-all outline-none">
+                    </div>
+                </div>
+                <!-- Actions -->
+                <div class="flex items-center justify-end gap-1 md:gap-3 flex-shrink-0">
+                    <div class="relative hidden md:block group/account">
+                        <button class="p-2 hover:bg-gray-100 rounded-full relative z-20"><i data-lucide="user" class="w-5 h-5 text-dark"></i></button>
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 pt-6 -mt-2 w-64 z-50 origin-top transition-all opacity-0 invisible -translate-y-2 group-hover/account:opacity-100 group-hover/account:visible group-hover/account:translate-y-0">
+                            <div class="bg-white rounded-xl shadow-xl border border-gray-100 py-3 overflow-hidden">
+                                {% if user.is_authenticated %}
+                                <div class="px-5 py-4 border-b border-gray-50 mb-2 bg-[#F8F5F1]/50 -mt-3">
+                                    <p class="font-serif text-lg text-dark">Welcome, {{ user.first_name|default:user.username }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">Manage your account and orders.</p>
+                                </div>
+                                <div class="p-2 flex flex-col gap-1">
+                                    <a href="{% url 'my_account' %}" class="text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg flex items-center gap-2"><i data-lucide="shopping-bag" class="w-4 h-4"></i> My Orders</a>
+                                    <a href="{% url 'edit_account' %}" class="text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg flex items-center gap-2"><i data-lucide="settings" class="w-4 h-4"></i> Account Settings</a>
+                                    <a href="{% url 'logout' %}" class="text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2"><i data-lucide="log-out" class="w-4 h-4"></i> Logout</a>
+                                </div>
+                                {% else %}
+                                <div class="px-5 py-4 border-b border-gray-50 mb-2 bg-[#F8F5F1]/50 -mt-3">
+                                    <p class="font-serif text-lg text-dark">Welcome</p>
+                                    <p class="text-xs text-gray-500 mt-1">Sign in to manage your orders.</p>
+                                </div>
+                                <div class="p-2 flex flex-col gap-1">
+                                    <a href="{% url 'login' %}" class="inline-flex items-center justify-center rounded-full font-medium transition-all active:scale-95 bg-accent hover:bg-[#E85A50] text-white w-full py-2 text-sm mb-2">Login / Register</a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <button class="hidden sm:block p-2 hover:bg-gray-100 rounded-full"><i data-lucide="heart" class="w-5 h-5 text-dark"></i></button>
+                    <a href="{% url 'cart_detail' %}" class="p-2 hover:bg-gray-100 rounded-full relative">
+                        <i data-lucide="shopping-bag" class="w-5 h-5 text-dark"></i>
+                        <span class="absolute top-0 right-0 w-4 h-4 bg-accent text-white text-[10px] font-bold flex items-center justify-center rounded-full js-cart-count">{{ cart_count }}</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- BOTTOM ROW (NAV) -->
+            <div class="hidden md:block border-b border-gray-100 relative z-50 bg-white">
+                <nav class="flex items-center justify-center gap-8 h-12 text-sm font-medium text-dark max-w-[1320px] mx-auto px-4">
+                    {% for item in shop_menu_items.shop %}
+                        {% with item_id=item.name|slugify %}
+                        <div class="h-full flex items-center js-nav-item" data-id="{% if item.has_dropdown %}{{ item_id }}{% endif %}">
+                            <a href="{{ item.url }}" class="relative group h-full flex items-center gap-1">
+                                {{ item.name }}
+                                {% if item.has_dropdown %}
+                                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-300 js-nav-arrow"></i>
+                                {% endif %}
+                                <span class="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 w-0 group-hover:w-full js-nav-underline"></span>
+                            </a>
+                        </div>
+                        {% endwith %}
+                        {% if item.name == "Home" %}
+                        <div class="h-full flex items-center">
+                            <a href="{% url 'product_list' %}" class="relative group h-full flex items-center gap-1">
+                                Products
+                                <span class="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 w-0 group-hover:w-full js-nav-underline"></span>
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </nav>
+            </div>
+
+            <!-- MEGA MENU CONTAINER -->
+            <div class="absolute left-0 w-full bg-white shadow-xl border-t border-gray-100 transition-all duration-300 overflow-hidden z-40 max-h-0 opacity-0 invisible js-mega-menu">
+                <!-- Shop Menu -->
+                <div class="max-w-[1320px] mx-auto px-8 py-12 animate-fade-in menu-content" data-menu="shop" style="display: none;">
+                    <div class="grid grid-cols-5 gap-8">
+                        <div class="space-y-6">
+                            <h4 class="font-serif text-lg text-dark">Clothing</h4>
+                            <ul class="space-y-3">
+                                <li><a href="/products/" class="text-gray-600 hover:text-primary transition-colors text-[15px]">All Clothing</a></li>
+                                <li><a href="/products/?category=dresses" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Dresses</a></li>
+                                <li><a href="/products/?category=tops" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Tops & Shirts</a></li>
+                                <li><a href="/products/?category=blazers" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Blazers & Jackets</a></li>
+                            </ul>
+                        </div>
+                        <div class="space-y-6">
+                            <h4 class="font-serif text-lg text-dark">Jewellery</h4>
+                            <ul class="space-y-3">
+                                <li><a href="/products/?category=jewellery" class="text-gray-600 hover:text-primary transition-colors text-[15px]">All Jewellery</a></li>
+                                <li><a href="/products/?category=jewellery&sort=newest" class="text-gray-600 hover:text-primary transition-colors text-[15px]">New Arrivals</a></li>
+                                <li><a href="/products/?category=jewellery&type=rings" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Rings</a></li>
+                                <li><a href="/products/?category=jewellery&type=earrings" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Earrings</a></li>
+                            </ul>
+                        </div>
+                        <div class="space-y-6">
+                            <h4 class="font-serif text-lg text-dark">Footwear</h4>
+                            <ul class="space-y-3">
+                                <li><a href="/products/?category=footwear" class="text-gray-600 hover:text-primary transition-colors text-[15px]">All Footwear</a></li>
+                                <li><a href="/products/?category=footwear&type=loafers" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Loafers & Flats</a></li>
+                                <li><a href="/products/?category=footwear&type=heels" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Heels</a></li>
+                                <li><a href="/products/?category=footwear&type=sneakers" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Sneakers</a></li>
+                            </ul>
+                        </div>
+                        <div class="space-y-6">
+                            <h4 class="font-serif text-lg text-dark">Edits</h4>
+                            <ul class="space-y-3">
+                                <li><a href="/products/?sort=bestsellers" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Best Sellers</a></li>
+                                <li><a href="/products/?collection=work" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Back to Work</a></li>
+                                <li><a href="/products/?collection=events" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Event Dressing</a></li>
+                                <li><a href="/products/?tag=sustainable" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Sustainable</a></li>
+                            </ul>
+                        </div>
+                        <div class="relative group cursor-pointer overflow-hidden rounded-xl">
+                            <div class="aspect-[3/4] w-full">
+                                <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                            </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-6 text-white">
+                                <h4 class="font-serif text-2xl mb-2">The Modern Utility</h4>
+                                <p class="text-sm text-white/90 mb-4">Effortless pieces designed for city living.</p>
+                                <a href="/products/" class="flex items-center gap-2 font-medium text-sm hover:gap-3 transition-all">
+                                    Shop Now
+                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collections Menu -->
+                <div class="max-w-[1320px] mx-auto px-8 py-12 animate-fade-in menu-content" data-menu="collections" style="display: none;">
+                    <div class="grid grid-cols-5 gap-8">
+                        <div class="space-y-6">
+                            <h4 class="font-serif text-lg text-dark">Current Season</h4>
+                            <ul class="space-y-3">
+                                <li><a href="/products/?season=spring-summer-25" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Spring / Summer '25</a></li>
+                                <li><a href="/products/?season=resort-25" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Resort '25</a></li>
+                                <li><a href="/products/?season=summer-essentials" class="text-gray-600 hover:text-primary transition-colors text-[15px]">High Summer Essentials</a></li>
+                            </ul>
+                        </div>
+                        <div class="space-y-6">
+                            <h4 class="font-serif text-lg text-dark">Signature Lines</h4>
+                            <ul class="space-y-3">
+                                <li><a href="/products/?collection=silk-capsule" class="text-gray-600 hover:text-primary transition-colors text-[15px]">The Silk Capsule</a></li>
+                                <li><a href="/products/?collection=gold-vermeil" class="text-gray-600 hover:text-primary transition-colors text-[15px]">18k Gold Vermeil</a></li>
+                                <li><a href="/products/?collection=italian-leather" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Italian Leather</a></li>
+                            </ul>
+                        </div>
+                        <div class="space-y-6">
+                            <h4 class="font-serif text-lg text-dark">Occasion</h4>
+                            <ul class="space-y-3">
+                                <li><a href="/products/?occasion=workwear" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Modern Workwear</a></li>
+                                <li><a href="/products/?occasion=evening" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Evening & Events</a></li>
+                                <li><a href="/products/?occasion=casual" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Weekend Casual</a></li>
+                            </ul>
+                        </div>
+                        <div class="space-y-6">
+                            <h4 class="font-serif text-lg text-dark">Archive</h4>
+                            <ul class="space-y-3">
+                                <li><a href="/products/?archive=past-seasons" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Past Seasons</a></li>
+                                <li><a href="/products/?archive=last-chance" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Last Chance to Buy</a></li>
+                            </ul>
+                        </div>
+                        <div class="relative group cursor-pointer overflow-hidden rounded-xl">
+                            <div class="aspect-[3/4] w-full">
+                                <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                            </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-6 text-white">
+                                <h4 class="font-serif text-2xl mb-2">The Silk Capsule</h4>
+                                <p class="text-sm text-white/90 mb-4">Luxurious, sustainable fabrics for everyday elegance.</p>
+                                <a href="/products/?collection=silk-capsule" class="flex items-center gap-2 font-medium text-sm hover:gap-3 transition-all">
+                                    Explore Capsule
+                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Arrivals Menu -->
+                <div class="max-w-[1320px] mx-auto px-8 py-12 animate-fade-in menu-content" data-menu="new-arrivals" style="display: none;">
+                    <div class="grid grid-cols-5 gap-8">
+                        <div class="space-y-6">
+                            <h4 class="font-serif text-lg text-dark">Just Landed</h4>
+                            <ul class="space-y-3">
+                                <li><a href="/products/?sort=newest" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Shop All New</a></li>
+                                <li><a href="/products/?sort=newest&period=week" class="text-gray-600 hover:text-primary transition-colors text-[15px]">This Week's Highlights</a></li>
+                                <li><a href="/products/?availability=back-in-stock" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Back in Stock</a></li>
+                                <li><a href="/products/?availability=coming-soon" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Coming Soon</a></li>
+                            </ul>
+                        </div>
+                        <div class="space-y-6">
+                            <h4 class="font-serif text-lg text-dark">Trending Now</h4>
+                            <ul class="space-y-3">
+                                <li><a href="/products/?trend=quiet-luxury" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Quiet Luxury</a></li>
+                                <li><a href="/products/?trend=statement-gold" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Statement Gold</a></li>
+                                <li><a href="/products/?trend=oversized-tailoring" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Oversized Tailoring</a></li>
+                                <li><a href="/products/?trend=suede-essentials" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Suede Essentials</a></li>
+                            </ul>
+                        </div>
+                        <div class="space-y-6">
+                            <h4 class="font-serif text-lg text-dark">By Category</h4>
+                            <ul class="space-y-3">
+                                <li><a href="/products/?category=clothing&sort=newest" class="text-gray-600 hover:text-primary transition-colors text-[15px]">New Clothing</a></li>
+                                <li><a href="/products/?category=jewellery&sort=newest" class="text-gray-600 hover:text-primary transition-colors text-[15px]">New Jewellery</a></li>
+                                <li><a href="/products/?category=footwear&sort=newest" class="text-gray-600 hover:text-primary transition-colors text-[15px]">New Footwear</a></li>
+                                <li><a href="/products/?category=accessories&sort=newest" class="text-gray-600 hover:text-primary transition-colors text-[15px]">New Accessories</a></li>
+                            </ul>
+                        </div>
+                        <div class="space-y-6">
+                            <h4 class="font-serif text-lg text-dark">Seasonal</h4>
+                            <ul class="space-y-3">
+                                <li><a href="/products/?season=summer&material=linen" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Summer Linens</a></li>
+                                <li><a href="/products/?season=resort" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Resort Wear</a></li>
+                                <li><a href="/products/?occasion=wedding-guest" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Wedding Guest</a></li>
+                                <li><a href="/products/?season=transitional" class="text-gray-600 hover:text-primary transition-colors text-[15px]">Transitional Layers</a></li>
+                            </ul>
+                        </div>
+                        <div class="relative group cursor-pointer overflow-hidden rounded-xl">
+                            <div class="aspect-[3/4] w-full">
+                                <img src="https://images.unsplash.com/photo-1581044773318-9ca1258faa5d?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                            </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-6 text-white">
+                                <h4 class="font-serif text-2xl mb-2">Fresh Perspectives</h4>
+                                <p class="text-sm text-white/90 mb-4">Explore the latest drops redefining the season.</p>
+                                <a href="/products/?sort=newest" class="flex items-center gap-2 font-medium text-sm hover:gap-3 transition-all">
+                                    View New In
+                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div id="app-root-content">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        <footer class="bg-dark text-white pt-16 pb-8">
+            <!-- Top Section -->
+            <div class="max-w-[1320px] mx-auto px-4 md:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div class="col-span-1">
+                    <div class="font-serif text-2xl mb-4">Cloth<span class="font-light">Verse</span></div>
+                    <p class="text-gray-400 text-sm mb-6 max-w-xs leading-relaxed">Modern affordable-luxe marketplace for everyday fashion, statement jewellery and curated footwear.</p>
+                    <div class="flex gap-4 text-gray-400">
+                        <a href="#" class="hover:text-white transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                        <a href="#" class="hover:text-white transition-colors"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                        <a href="#" class="hover:text-white transition-colors"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-medium mb-4 text-sm tracking-wider uppercase">Shop</h4>
+                    <ul class="flex flex-col gap-3 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">New Arrivals</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Bestsellers</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Gift Cards</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Sale</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-medium mb-4 text-sm tracking-wider uppercase">Help</h4>
+                    <ul class="flex flex-col gap-3 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">Delivery & Returns</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Track Order</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">FAQs</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+                 <div>
+                    <h4 class="font-medium mb-4 text-sm tracking-wider uppercase">About</h4>
+                    <ul class="flex flex-col gap-3 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">Our Story</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Sustainability</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Press</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Bottom Section -->
+            <div class="max-w-[1320px] mx-auto px-4 md:px-8 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+                <div class="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+                    <p>© 2025 ClothVerse. All rights reserved.</p>
+                    <div class="flex gap-4">
+                        <a href="#" class="hover:text-gray-300 transition-colors">Privacy Policy</a>
+                        <a href="#" class="hover:text-gray-300 transition-colors">Terms of Service</a>
+                        <a href="#" class="hover:text-white transition-colors">Cookie Policy</a>
+                    </div>
+                </div>
+                <!-- Mock Payment Icons -->
+                <div class="flex items-center gap-3 opacity-60">
+                    <i data-lucide="credit-card" class="w-6 h-6"></i>
+                    <span class="uppercase tracking-widest text-[10px] font-medium">Secure Payment</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Render icons on page load
+        lucide.createIcons();
+
+        // MOBILE MENU
+        $(document).ready(function() {
+            function toggleMobileMenu(forceClose = false) {
+                const $overlay = $('.js-mobile-menu-overlay');
+                const isOpen = !$overlay.hasClass('pointer-events-none') || forceClose;
+
+                $overlay.toggleClass('pointer-events-none', isOpen);
+                $('.js-mobile-menu-backdrop').toggleClass('opacity-0', isOpen);
+                $('.js-mobile-menu-drawer').toggleClass('-translate-x-full', isOpen);
+            }
+
+            $(document).on('click', '.js-toggle-mobile-menu', () => toggleMobileMenu());
+            $(document).on('click', '.js-mobile-menu-backdrop', () => toggleMobileMenu(true));
+        });
+
+
+        // MEGA MENU INTERACTIONS
+        $(document).ready(function() {
+            const MEGA_MENUS = {
+                'shop': {
+                    featured: { image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000&auto=format&fit=crop', title: 'The Modern Utility', subtitle: 'Effortless pieces designed for city living.', cta: 'Shop the Collection' }
+                },
+                'new-arrivals': {
+                    featured: { image: 'https://images.unsplash.com/photo-1581044777550-4cfa60707c03?q=80&w=1000&auto=format&fit=crop', title: 'Fresh Perspectives', subtitle: 'Explore the latest drops redefining the season.', cta: 'View New In' }
+                },
+                'collections': {
+                    featured: { image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1000&auto=format&fit=crop', title: 'The Silk Capsule', subtitle: 'Luxurious, sustainable fabrics for everyday elegance.', cta: 'Explore Capsule' }
+                }
+            };
+
+            function updateMegaMenu(menuId) {
+                const $menu = $('.js-mega-menu');
+                const $header = $('.js-header');
+                
+                // 1. Reset all active nav states
+                $('.js-nav-item').removeClass('text-primary');
+                $('.js-nav-underline').removeClass('w-full').addClass('w-0');
+                $('.js-nav-arrow').removeClass('rotate-180');
+
+                if (menuId) {
+                    // 2. Set active nav state
+                    const $activeNav = $(`.js-nav-item[data-id="${menuId}"]`);
+                    $activeNav.addClass('text-primary');
+                    $activeNav.find('.js-nav-underline').removeClass('w-0').addClass('w-full');
+                    $activeNav.find('.js-nav-arrow').addClass('rotate-180');
+
+                    // 3. Show Menu and content
+                    $('.menu-content').hide();
+                    $(`[data-menu="${menuId}"]`).show();
+                    $menu.removeClass('max-h-0 opacity-0 invisible').addClass('max-h-[500px] opacity-100 visible');
+                    $header.addClass('shadow-sm');
+                } else {
+                    // Hide Menu
+                    $menu.removeClass('max-h-[500px] opacity-100 visible').addClass('max-h-0 opacity-0 invisible');
+                    if (window.scrollY <= 50) $header.removeClass('shadow-sm');
+                }
+            }
+
+            let menuTimeout;
+            $(document).on('mouseenter', '.js-nav-item', function() {
+                clearTimeout(menuTimeout);
+                const id = $(this).data('id');
+                updateMegaMenu(id);
+            });
+            $(document).on('mouseleave', 'header.js-header', function() {
+                menuTimeout = setTimeout(() => updateMegaMenu(null), 150);
+            });
+        });
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

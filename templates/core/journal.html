@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Journal - ClothVerse{% endblock %}
+
+{% block content %}
+<main class="py-16 md:py-24 bg-neutral/50 animate-fade-in">
+    <div class="max-w-6xl mx-auto px-4">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <h1 class="font-serif text-4xl text-dark mb-4">Fashion Journal</h1>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto">Discover the latest trends, styling tips, and fashion insights from the ClothVerse team. Stay inspired and elevate your wardrobe with our curated content.</p>
+        </div>
+
+        <!-- Featured Article -->
+        <div class="mb-16">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="md:flex">
+                    <div class="md:w-1/2">
+                        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop" alt="Fashion Journal" class="w-full h-64 md:h-full object-cover">
+                    </div>
+                    <div class="md:w-1/2 p-8">
+                        <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+                            <span class="bg-primary/10 text-primary px-3 py-1 rounded-full">Featured</span>
+                            <span>•</span>
+                            <span>November 10, 2025</span>
+                        </div>
+                        <h2 class="font-serif text-3xl text-dark mb-4">Autumn Wardrobe Essentials</h2>
+                        <p class="text-gray-600 mb-6 leading-relaxed">As the leaves change color, it's time to refresh your wardrobe with pieces that transition seamlessly from summer to fall. Discover the must-have items that will keep you stylish and comfortable through the changing seasons.</p>
+                        <a href="#" class="inline-flex items-center text-primary hover:text-primary/80 font-medium">
+                            Read More
+                            <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Journal Articles Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Article 1 -->
+            <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-lg transition-all duration-300">
+                <div class="aspect-[4/3] bg-neutral relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop" alt="Sustainable Fashion" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                        <span class="bg-accent/10 text-accent px-2 py-1 rounded">Sustainability</span>
+                        <span>•</span>
+                        <span>Nov 8, 2025</span>
+                    </div>
+                    <h3 class="font-serif text-xl text-dark mb-3 group-hover:text-primary transition-colors">The Rise of Sustainable Fashion</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">Explore how eco-conscious brands are revolutionizing the fashion industry with innovative materials and ethical production methods.</p>
+                    <a href="#" class="text-primary hover:text-primary/80 text-sm font-medium">Read Article →</a>
+                </div>
+            </article>
+
+            <!-- Article 2 -->
+            <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-lg transition-all duration-300">
+                <div class="aspect-[4/3] bg-neutral relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1506629905607-0b5ab9a9e21a?w=400&h=300&fit=crop" alt="Color Trends" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                        <span class="bg-gold/10 text-gold px-2 py-1 rounded">Trends</span>
+                        <span>•</span>
+                        <span>Nov 5, 2025</span>
+                    </div>
+                    <h3 class="font-serif text-xl text-dark mb-3 group-hover:text-primary transition-colors">Color Palette for Winter 2026</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">From deep jewel tones to soft pastels, discover the color trends that will define the upcoming winter season.</p>
+                    <a href="#" class="text-primary hover:text-primary/80 text-sm font-medium">Read Article →</a>
+                </div>
+            </article>
+
+            <!-- Article 3 -->
+            <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-lg transition-all duration-300">
+                <div class="aspect-[4/3] bg-neutral relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&h=300&fit=crop" alt="Style Guide" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                        <span class="bg-primary/10 text-primary px-2 py-1 rounded">Style Guide</span>
+                        <span>•</span>
+                        <span>Nov 3, 2025</span>
+                    </div>
+                    <h3 class="font-serif text-xl text-dark mb-3 group-hover:text-primary transition-colors">Office to Evening: Versatile Outfits</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">Learn how to create versatile wardrobe pieces that effortlessly transition from professional settings to evening events.</p>
+                    <a href="#" class="text-primary hover:text-primary/80 text-sm font-medium">Read Article →</a>
+                </div>
+            </article>
+
+            <!-- Article 4 -->
+            <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-lg transition-all duration-300">
+                <div class="aspect-[4/3] bg-neutral relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=300&fit=crop" alt="Accessories" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                        <span class="bg-accent/10 text-accent px-2 py-1 rounded">Accessories</span>
+                        <span>•</span>
+                        <span>Nov 1, 2025</span>
+                    </div>
+                    <h3 class="font-serif text-xl text-dark mb-3 group-hover:text-primary transition-colors">Statement Jewelry Guide</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">Elevate your look with our comprehensive guide to choosing and styling statement jewelry pieces for any occasion.</p>
+                    <a href="#" class="text-primary hover:text-primary/80 text-sm font-medium">Read Article →</a>
+                </div>
+            </article>
+
+            <!-- Article 5 -->
+            <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-lg transition-all duration-300">
+                <div class="aspect-[4/3] bg-neutral relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop" alt="Fashion History" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                        <span class="bg-gold/10 text-gold px-2 py-1 rounded">History</span>
+                        <span>•</span>
+                        <span>Oct 28, 2025</span>
+                    </div>
+                    <h3 class="font-serif text-xl text-dark mb-3 group-hover:text-primary transition-colors">Vintage Fashion Revival</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">Explore how vintage pieces from different eras are making a comeback in modern wardrobes and styling.</p>
+                    <a href="#" class="text-primary hover:text-primary/80 text-sm font-medium">Read Article →</a>
+                </div>
+            </article>
+
+            <!-- Article 6 -->
+            <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-lg transition-all duration-300">
+                <div class="aspect-[4/3] bg-neutral relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1506629905607-0b5ab9a9e21a?w=400&h=300&fit=crop" alt="Seasonal Fashion" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                        <span class="bg-primary/10 text-primary px-2 py-1 rounded">Seasonal</span>
+                        <span>•</span>
+                        <span>Oct 25, 2025</span>
+                    </div>
+                    <h3 class="font-serif text-xl text-dark mb-3 group-hover:text-primary transition-colors">Layering Techniques for Winter</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">Master the art of layering with our expert tips on creating warm, stylish outfits for the colder months.</p>
+                    <a href="#" class="text-primary hover:text-primary/80 text-sm font-medium">Read Article →</a>
+                </div>
+            </article>
+        </div>
+
+        <!-- Newsletter Signup -->
+        <div class="mt-16 bg-gradient-to-r from-primary to-accent rounded-xl p-8 text-center text-white">
+            <h2 class="font-serif text-3xl mb-4">Stay Inspired</h2>
+            <p class="text-white/80 mb-6 max-w-md mx-auto">Subscribe to our newsletter and be the first to know about new articles, fashion tips, and exclusive content.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+                <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-3 rounded-lg text-dark focus:ring-2 focus:ring-white focus:border-transparent outline-none">
+                <button class="px-6 py-3 bg-white text-primary rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                    Subscribe
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

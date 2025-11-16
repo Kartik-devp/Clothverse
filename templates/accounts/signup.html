@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Create Account - ClothVerse{% endblock %}
+
+{% block content %}
+<main class="py-16 md:py-24 bg-neutral/50 animate-fade-in flex items-center">
+    <div class="max-w-4xl w-full mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <!-- Image Column -->
+            <div class="hidden md:block">
+                <img src="{% static 'images/product-1.jpg' %}" alt="Fashion model" class="w-full h-full object-cover">
+            </div>
+
+            <!-- Form Column -->
+            <div class="px-8 py-10 md:px-10 md:py-12">
+                <h1 class="font-serif text-3xl text-dark text-center mb-2">Create an Account</h1>
+                <p class="text-gray-600 text-center mb-8">Join the ClothVerse community.</p>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="mb-4 p-4 text-sm rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" action="{% url 'signup' %}" class="space-y-5">
+                    {% csrf_token %}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label for="first_name" class="block text-sm font-medium text-gray-700 mb-1.5">First Name</label>
+                            <input type="text" name="first_name" id="first_name" required class="w-full bg-neutral border-2 border-transparent focus:border-primary/10 focus:bg-white rounded-lg py-2.5 px-4 text-sm transition-all outline-none" placeholder="John">
+                        </div>
+                        <div>
+                            <label for="last_name" class="block text-sm font-medium text-gray-700 mb-1.5">Last Name</label>
+                            <input type="text" name="last_name" id="last_name" required class="w-full bg-neutral border-2 border-transparent focus:border-primary/10 focus:bg-white rounded-lg py-2.5 px-4 text-sm transition-all outline-none" placeholder="Doe">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
+                        <input type="email" name="email" id="email" required class="w-full bg-neutral border-2 border-transparent focus:border-primary/10 focus:bg-white rounded-lg py-2.5 px-4 text-sm transition-all outline-none" placeholder="you@example.com">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+                        <input type="password" name="password" id="password" required class="w-full bg-neutral border-2 border-transparent focus:border-primary/10 focus:bg-white rounded-lg py-2.5 px-4 text-sm transition-all outline-none" placeholder="••••••••">
+                    </div>
+                    <div>
+                        <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password</label>
+                        <input type="password" name="confirm_password" id="confirm_password" required class="w-full bg-neutral border-2 border-transparent focus:border-primary/10 focus:bg-white rounded-lg py-2.5 px-4 text-sm transition-all outline-none" placeholder="••••••••">
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full mt-2 inline-flex items-center justify-center rounded-full font-medium transition-all active:scale-95 disabled:opacity-50 bg-accent hover:bg-[#E85A50] text-white px-8 py-3 text-base">Create Account</button>
+                    </div>
+                </form>
+                <p class="text-center text-sm text-gray-600 mt-6">
+                    Already have an account? <a href="{% url 'login' %}" class="font-medium text-primary hover:underline">Sign in</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

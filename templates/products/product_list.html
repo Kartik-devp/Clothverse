@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if selected_category %}{{ selected_category.name }}{% elif selected_collection %}{{ selected_collection.name }}{% elif selected_brand %}{{ selected_brand.name }}{% else %}Products{% endif %} - ClothVerse{% endblock %}
+
+{% block content %}
+<main class="py-16 md:py-24 bg-neutral/50 animate-fade-in">
+    <div class="max-w-7xl mx-auto px-4">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="font-serif text-4xl text-dark mb-2">
+                {% if selected_category %}{{ selected_category.name }}{% elif selected_collection %}{{ selected_collection.name }}{% elif selected_brand %}{{ selected_brand.name }}{% else %}All Products{% endif %}
+            </h1>
+            <p class="text-gray-600">
+                {% if selected_category %}Discover our {{ selected_category.name|lower }} collection{% elif selected_collection %}{{ selected_collection.description }}{% elif selected_brand %}Explore {{ selected_brand.name }} products{% else %}Browse our complete collection of fashion and lifestyle products{% endif %}
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Filters Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24">
+                    <h2 class="font-serif text-xl text-dark mb-6">Categories</h2>
+                    <nav class="space-y-2">
+                        <a href="{% url 'product_list' %}" class="block px-4 py-2 text-sm rounded-lg transition-colors {% if not selected_category and not selected_collection and not selected_brand %}bg-primary text-white{% else %}text-gray-600 hover:bg-gray-50{% endif %}">
+                            All Products
+                        </a>
+                        {% for category in categories %}
+                            <a href="{% url 'category_products' category.id %}" class="block px-4 py-2 text-sm rounded-lg transition-colors {% if selected_category and selected_category.id == category.id %}bg-primary text-white{% else %}text-gray-600 hover:bg-gray-50{% endif %}">
+                                {{ category.name }}
+                            </a>
+                        {% endfor %}
+                    </nav>
+
+                    <!-- Price Filter -->
+                    <div class="border-t border-gray-200 mt-6 pt-6">
+                        <h3 class="font-medium text-dark mb-4">Price Range</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="price" class="text-primary focus:ring-primary" checked>
+                                <span class="ml-2 text-sm text-gray-600">All Prices</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="price" class="text-primary focus:ring-primary">
+                                <span class="ml-2 text-sm text-gray-600">Under ₹1,000</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="price" class="text-primary focus:ring-primary">
+                                <span class="ml-2 text-sm text-gray-600">₹1,000 - ₹5,000</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="price" class="text-primary focus:ring-primary">
+                                <span class="ml-2 text-sm text-gray-600">Over ₹5,000</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="lg:col-span-3">
+                {% if products %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        {% for product in products %}
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-lg transition-all duration-300">
+                                <!-- Product Image -->
+                                <div class="aspect-square bg-neutral relative overflow-hidden">
+                                    {% if product.images.first %}
+                                        <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                    {% else %}
+                                        <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                            <i data-lucide="image" class="w-12 h-12 text-gray-400"></i>
+                                        </div>
+                                    {% endif %}
+
+                                    <!-- Quick Actions -->
+                                    <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50">
+                                            <i data-lucide="heart" class="w-4 h-4 text-gray-600"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Product Info -->
+                                <div class="p-6">
+                                    <div class="mb-2">
+                                        {% if product.brand %}
+                                            <span class="text-xs text-gray-500 uppercase tracking-wide">{{ product.brand.name }}</span>
+                                        {% endif %}
+                                    </div>
+
+                                    <h3 class="font-medium text-dark mb-2 line-clamp-2">
+                                        <a href="{% url 'product_detail' product.slug %}" class="hover:text-primary transition-colors">{{ product.name }}</a>
+                                    </h3>
+
+                                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ product.description }}</p>
+
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-lg font-semibold text-dark">₹{{ product.price }}</span>
+                                            {% if product.original_price and product.original_price > product.price %}
+                                                <span class="text-sm text-gray-500 line-through">₹{{ product.original_price }}</span>
+                                            {% endif %}
+                                        </div>
+
+                                        <form method="post" action="{% url 'add_to_cart' product.id %}" class="inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="inline-flex items-center justify-center w-8 h-8 bg-accent hover:bg-[#E85A50] text-white rounded-full transition-colors">
+                                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <!-- No Products -->
+                    <div class="text-center py-16">
+                        <div class="w-24 h-24 bg-neutral rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i data-lucide="package" class="w-12 h-12 text-gray-400"></i>
+                        </div>
+                        <h2 class="font-serif text-2xl text-dark mb-4">No products found</h2>
+                        <p class="text-gray-600 mb-8 max-w-md mx-auto">We couldn't find any products matching your criteria. Try adjusting your filters or browse our full collection.</p>
+                        <a href="{% url 'product_list' %}" class="inline-flex items-center justify-center rounded-full font-medium transition-all active:scale-95 bg-accent hover:bg-[#E85A50] text-white px-8 py-4 text-base">
+                            View All Products
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shopping Cart - ClothVerse{% endblock %}
+
+{% block content %}
+<main class="py-16 md:py-24 bg-neutral/50 animate-fade-in">
+    <div class="max-w-6xl mx-auto px-4">
+        <h1 class="font-serif text-4xl text-dark text-center mb-2">Your Shopping Cart</h1>
+        <p class="text-gray-600 text-center mb-12">Review your items and proceed to checkout.</p>
+
+        {% if cart_items %}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Cart Items -->
+                <div class="lg:col-span-2 space-y-4">
+                    {% for item in cart_items %}
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 cart-item-container">
+                            <div class="flex gap-6">
+                                <!-- Product Image -->
+                                <div class="w-24 h-24 bg-neutral rounded-lg overflow-hidden flex-shrink-0">
+                                    {% if item.product.images.first %}
+                                        <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}" class="w-full h-full object-cover">
+                                    {% else %}
+                                        <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                            <i data-lucide="image" class="w-8 h-8 text-gray-400"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Product Details -->
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-medium text-dark text-lg mb-1">{{ item.product.name }}</h3>
+                                    <p class="text-gray-600 text-sm mb-3">{{ item.product.description|truncatechars:100 }}</p>
+
+                                    <!-- Quantity Controls -->
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex items-center border border-gray-300 rounded-lg">
+                                            <button type="button" class="decrement-btn p-2 hover:bg-gray-50 transition-colors" data-item-id="{{ item.id }}">
+                                                <i data-lucide="minus" class="w-4 h-4 text-gray-600"></i>
+                                            </button>
+                                            <span class="px-4 py-2 text-center min-w-[3rem] quantity-display">{{ item.quantity }}</span>
+                                            <button type="button" class="increment-btn p-2 hover:bg-gray-50 transition-colors" data-item-id="{{ item.id }}">
+                                                <i data-lucide="plus" class="w-4 h-4 text-gray-600"></i>
+                                            </button>
+                                        </div>
+                                        <button type="button" class="remove-btn text-red-600 hover:text-red-700 text-sm font-medium ml-4" data-item-id="{{ item.id }}">
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Price -->
+                                <div class="text-right">
+                                    <div class="text-lg font-semibold text-dark item-total">₹{{ item.get_total_price }}</div>
+                                    <div class="text-sm text-gray-600">₹{{ item.product.price }} each</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Order Summary -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 sticky top-24">
+                        <h2 class="font-serif text-xl text-dark mb-6">Order Summary</h2>
+
+                        <div class="space-y-4 mb-6">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Subtotal ({{ cart.get_total_items }} items)</span>
+                                <span class="font-medium subtotal-price">₹{{ total_price }}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Shipping</span>
+                                <span class="font-medium text-green-600">Free</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Tax</span>
+                                <span class="font-medium">₹0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-200 pt-4 mb-6">
+                            <div class="flex justify-between text-lg font-semibold">
+                                <span>Total</span>
+                                <span class="cart-total">₹{{ total_price }}</span>
+                            </div>
+                        </div>
+
+                        <a href="{% url 'checkout' %}" class="w-full inline-flex items-center justify-center rounded-full font-medium transition-all active:scale-95 bg-accent hover:bg-[#E85A50] text-white px-8 py-4 text-base mb-4">
+                            Proceed to Checkout
+                        </a>
+
+                        <a href="{% url 'home' %}" class="w-full inline-flex items-center justify-center rounded-full font-medium transition-all active:scale-95 border-2 border-gray-300 hover:border-primary text-gray-700 hover:text-primary px-8 py-4 text-base">
+                            Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <!-- Empty Cart -->
+            <div class="text-center py-16">
+                <div class="w-24 h-24 bg-neutral rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="shopping-bag" class="w-12 h-12 text-gray-400"></i>
+                </div>
+                <h2 class="font-serif text-2xl text-dark mb-4">Your cart is empty</h2>
+                <p class="text-gray-600 mb-8 max-w-md mx-auto">Looks like you haven't added any items to your cart yet. Start shopping to fill it up!</p>
+                <a href="{% url 'home' %}" class="inline-flex items-center justify-center rounded-full font-medium transition-all active:scale-95 bg-accent hover:bg-[#E85A50] text-white px-8 py-4 text-base">
+                    Start Shopping
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</main>
+
+{% if cart_items %}
+<input type="hidden" name="csrfmiddlewaretoken" value="{% csrf_token %}">
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle quantity increment/decrement
+    document.querySelectorAll('.increment-btn, .decrement-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const itemId = this.dataset.itemId;
+            const action = this.classList.contains('increment-btn') ? 'increment' : 'decrement';
+
+            fetch(`/cart/update/${itemId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({ action: action })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.removed) {
+                        // Remove item from DOM
+                        this.closest('.cart-item-container').remove();
+                        updateCartCount(data.cart_count);
+                        updateCartTotal(data.cart_total);
+                        // Check if cart is empty
+                        if (document.querySelectorAll('.cart-item-container').length === 0) {
+                            location.reload();
+                        }
+                    } else {
+                        // Update quantity and totals
+                        const itemContainer = this.closest('.cart-item-container');
+                        itemContainer.querySelector('.quantity-display').textContent = data.quantity;
+                        itemContainer.querySelector('.item-total').textContent = formatPrice(data.item_total);
+                        updateCartTotal(data.cart_total);
+                        updateCartCount(data.cart_count);
+                        updateSubtotal(data.cart_total, data.cart_count);
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+
+    // Handle remove item
+    document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const itemId = this.dataset.itemId;
+
+            fetch(`/cart/remove/${itemId}/`, { // Corrected URL
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'X-Requested-With': 'XMLHttpRequest' // Added header
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const itemContainer = this.closest('.cart-item-container');
+                    if (itemContainer) itemContainer.remove();
+                    updateCartCount(data.cart_count);
+                    updateCartTotal(data.cart_total);
+                    updateSubtotal(data.cart_total, data.cart_count);
+                    // Check if cart is empty
+                    if (document.querySelectorAll('.cart-item-container').length === 0) {
+                        location.reload();
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+    
+    function formatPrice(price) {
+        return '₹' + parseFloat(price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    
+    function updateCartTotal(total) {
+        document.querySelector('.cart-total').textContent = formatPrice(total);
+    }
+
+    function updateSubtotal(total, count) {
+        const subtotalContainer = document.querySelector('.subtotal-price').parentElement;
+        subtotalContainer.querySelector('span:first-child').textContent = `Subtotal (${count} items)`;
+        subtotalContainer.querySelector('.subtotal-price').textContent = formatPrice(total);
+    }
+    function updateCartCount(count) {
+        const cartCountElements = document.querySelectorAll('.js-cart-count');
+        cartCountElements.forEach(el => el.textContent = count);
+    }
+});
+</script>
+{% endif %}
+
+{% endblock %}
