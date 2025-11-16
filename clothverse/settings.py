@@ -25,7 +25,7 @@ STATIC_DIR = BASE_DIR / 'static'
 SECRET_KEY = 'django-insecure-(t^_#u#$!ohl2w%5$3_eix$)q-6$fv+xlb+fvok2#&k7*+7omx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['clothverse.onrender.com']
 
