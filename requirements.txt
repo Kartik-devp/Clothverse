@@ -6,3 +6,4 @@ stripe==5.5.0
 gunicorn==21.2.0
 cloudinary==1.41.0
 django-cloudinary-storage==0.3.0
+mysqlclient==2.2.4
