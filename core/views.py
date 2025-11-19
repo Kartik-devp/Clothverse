@@ -14,3 +14,5 @@ def home(request):
 
 def journal(request):
     return render(request, 'core/journal.html')
+
+

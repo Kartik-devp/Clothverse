@@ -35,13 +35,13 @@ class ProductAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         # Upload image to Cloudinary if a new image is provided
-        if obj.image and not obj.image.url.startswith('http'):
+        if obj.image and not isinstance(obj.image, str):
             try:
                 result = cloudinary.uploader.upload(obj.image.path, folder='products')
                 obj.image = result['url']
             except Exception as e:
                 messages.error(request, f"Failed to upload image to Cloudinary: {e}")
-                return
+                obj.image = ''  # Set to empty string if upload fails
         super().save_model(request, obj, form, change)
 
 
@@ -52,13 +52,13 @@ class ProductImageAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         # Upload image to Cloudinary if a new image is provided
-        if obj.image and not obj.image.url.startswith('http'):
+        if obj.image and not isinstance(obj.image, str):
             try:
                 result = cloudinary.uploader.upload(obj.image.path, folder='products')
                 obj.image = result['url']
             except Exception as e:
                 messages.error(request, f"Failed to upload image to Cloudinary: {e}")
-                return
+                obj.image = ''  # Set to empty string if upload fails
         super().save_model(request, obj, form, change)
 
 @admin.register(Size)

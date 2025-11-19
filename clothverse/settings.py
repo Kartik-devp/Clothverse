@@ -25,9 +25,9 @@ STATIC_DIR = BASE_DIR / 'static'
 SECRET_KEY = 'django-insecure-(t^_#u#$!ohl2w%5$3_eix$)q-6$fv+xlb+fvok2#&k7*+7omx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['clothverse.onrender.com']
+ALLOWED_HOSTS = ['clothverse.onrender.com','127.0.0.1']
 
 
 # Application definition
@@ -86,10 +86,15 @@ WSGI_APPLICATION = 'clothverse.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'clothverse_db',
+        'USER': 'postgres',
+        'PASSWORD': '080405',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
 
 import cloudinary
 

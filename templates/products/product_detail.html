@@ -12,8 +12,8 @@
                 <!-- Main Image -->
                 <div class="w-full max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="aspect-[4/5] relative">
-                        {% if product and product.images.first %}
-                            <img id="main-image" src="{{ product.image.url|default:product.images.first.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+                        {% if product.images.first %}
+                            <img id="main-image" src="{{ product.images.first.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
                         {% else %}
                             <div class="w-full h-full bg-gray-200 flex items-center justify-center">
                                 <i data-lucide="image" class="w-16 h-16 text-gray-400"></i>
@@ -22,14 +22,9 @@
                     </div>
                 </div>
 
-                <!-- Thumbnail Images - Show 3 -->
+                <!-- Thumbnail Images - Show 4 -->
                 <div class="grid grid-cols-4 gap-3 max-w-md mx-auto" id="thumbnail-container">
-                    {% if product.image %}
-                        <button onclick="changeImage('{{ product.image.url }}', this)" class="thumbnail-btn aspect-square bg-white rounded-lg border-2 border-primary hover:border-primary transition-colors overflow-hidden">
-                            <img src="{{ product.image.url }}" alt="{{ product.name }} thumbnail" class="w-full h-full object-cover">
-                        </button>
-                    {% endif %}
-                    {% for image in product.images.all|slice:":3" %}
+                    {% for image in product.images.all|slice:":4" %}
                         <button onclick="changeImage('{{ image.image.url }}', this)" class="thumbnail-btn aspect-square bg-white rounded-lg border-2 {% if forloop.first %}border-primary{% else %}border-gray-200{% endif %} hover:border-primary transition-colors overflow-hidden">
                             <img src="{{ image.image.url }}" alt="{{ product.name }} thumbnail {{ forloop.counter }}" class="w-full h-full object-cover">
                         </button>

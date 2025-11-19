@@ -45,11 +45,11 @@ PRODUCT_ITEMS = [
     "Sweater",
 ]
 
-PLACEHOLDER_FILES = ["product-1.jpg", "product-2.jpg", "product-3.jpg"]
+PLACEHOLDER_FILES = ["4K_professional_studio_photo_of-1.jpg", "4K_professional_studio_photo_of-2.jpg", "4K_professional_studio_photo_of-3.jpg", "test_image_0.jpg"]
 
 
 class Command(BaseCommand):
-    help = "Seed database with 150 clothing products across categories, each with 3 images"
+    help = "Seed database with 150 clothing products across categories, each with 4 images"
 
     def add_arguments(self, parser):
         parser.add_argument("--count", type=int, default=150, help="Number of products to create")
@@ -76,13 +76,14 @@ class Command(BaseCommand):
             categories.append(cat)
 
         # Resolve placeholder image paths
-        static_images_dir = os.path.join(settings.BASE_DIR, "static", "images")
+        media_images_dir = os.path.join(settings.BASE_DIR, "media")
         placeholder_paths = []
         for fname in PLACEHOLDER_FILES:
-            path = os.path.join(static_images_dir, fname)
+            path = os.path.join(media_images_dir, fname)
             if not os.path.exists(path):
                 self.stdout.write(self.style.WARNING(f"Placeholder not found: {path}. Using first available if any."))
-            placeholder_paths.append(path)
+            else:
+                placeholder_paths.append(path)
 
         created = 0
         for i in range(count):
@@ -118,8 +119,8 @@ class Command(BaseCommand):
 
             product.save()
 
-            # Add 3 side images
-            used = random.sample(placeholder_paths, k=min(3, len(placeholder_paths))) if placeholder_paths else []
+            # Add 4 side images
+            used = random.sample(placeholder_paths, k=min(4, len(placeholder_paths))) if placeholder_paths else []
             pos = 0
             for p in used:
                 if not os.path.exists(p):
